@@ -12,6 +12,10 @@ The `SomeOne` class uses new to resolve the necessary dependencies while the `So
 The ETL package implements a minimal ETL job that queries the top stargazed repositories via the GitHub API and stores them in an H2 database (initialized using Flyway).
 There are two implementations: One plain Java (`ETLHardCoded.java`) and one with Google Guice (`ETLGuice.java`) and a `Runner.java` that can execute them.
 
+### Plain Java ETL
+![ETL-ARCHITECTURE-PLAIN-JAVA](/ETL-JOB-USING-PLAIN-JAVA.png?raw=true)
+
+
 ### Guice ETL
 ![ETL-ARCHITECTURE-DI](/ETL-JOB-USING-DI.png?raw=true)
 
