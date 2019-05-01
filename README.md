@@ -26,4 +26,17 @@ Classes to implement the different stages.
 
 - Extractor: `GitHubStarExtractor` that uses a FeignClient `GitHub` to search for top stargazed repositories
 - Transformer: `ToSQLDatabaseEntryTransformer` that transforms `TopNRepositories` into `List<RepositoriesDBEntry>`
-- Loader: `TopNStaredRepositoriesLoader` loads the `List<RepositoriesDBEntry>` into a H2 database (setup through Flyway) using a prepared statement. 
+- Loader: `TopNStaredRepositoriesLoader` loads the `List<RepositoriesDBEntry>` into a H2 database (setup through Flyway) using a prepared statement.
+
+## Execute
+
+```bash
+# build everything
+mvn clean install
+
+# execute the plain java implementation of the etl job
+mvn exec:java -Dexec.args="plain"
+
+# execute the guice implementation of the etl job
+mvn exec:java [-Dexec.args="guice"]
+```

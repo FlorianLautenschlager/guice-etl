@@ -26,21 +26,37 @@ public class Runner {
     }
 
     public static void main(String[] args) {
+
+        LOGGER.info("Call arguments: {}", (Object[]) args);
+
+        String mode = "guice";
+        if (args.length >= 1) {
+            mode = args[0];
+        }
+
         setup();
 
-        LOGGER.info("===== ETL USING GUICE =====");
-        Injector injector = Guice.createInjector(new ETLModule());
-        ETLUsingGuice eTLUsingGuice = injector.getInstance(ETLUsingGuice.class);
+        if ("guice".equalsIgnoreCase(mode)) {
+            LOGGER.info("===== ETL USING GUICE =====");
+            Injector injector = Guice.createInjector(new ETLModule());
+            ETLUsingGuice eTLUsingGuice = injector.getInstance(ETLUsingGuice.class);
 
-        eTLUsingGuice.run();
+            eTLUsingGuice.run();
+        } else {
+            LOGGER.info("===== ETL USING PLAIN JAVA =====");
+            new ETLHardCoded().run();
+        }
     }
 
     static class ETLModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(new TypeLiteral<Extractor<TopNRepositories>>() {}).to(GitHubStarExtractor.class);
-            bind(new TypeLiteral<Transformer<TopNRepositories, List<RepositoriesDBEntry>>>() {}).to(ToSQLDatabaseEntryTransformer.class);
-            bind(new TypeLiteral<Loader<List<RepositoriesDBEntry>>>() {}).to(TopNStaredRepositoriesLoader.class);
+            bind(new TypeLiteral<Extractor<TopNRepositories>>() {
+            }).to(GitHubStarExtractor.class);
+            bind(new TypeLiteral<Transformer<TopNRepositories, List<RepositoriesDBEntry>>>() {
+            }).to(ToSQLDatabaseEntryTransformer.class);
+            bind(new TypeLiteral<Loader<List<RepositoriesDBEntry>>>() {
+            }).to(TopNStaredRepositoriesLoader.class);
         }
     }
 }
