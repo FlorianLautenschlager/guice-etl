@@ -21,7 +21,9 @@ import java.util.List;
 public class Runner {
 
     private static void setup() {
-        Flyway flyway = Flyway.configure().dataSource("jdbc:h2:file:./target/db.h2", "root", null).load();
+        Flyway flyway = Flyway.configure()
+                .dataSource("jdbc:h2:file:./target/db.h2", "root", null)
+                .load();
         flyway.migrate();
     }
 
@@ -38,9 +40,15 @@ public class Runner {
 
         if ("guice".equalsIgnoreCase(mode)) {
             LOGGER.info("===== ETL USING GUICE =====");
+
+            //TODO: Instantiate the guice injector
             Injector injector = Guice.createInjector(new ETLModule());
+
+            //TODO: Get an Instance of our ETLUsingGuice class
             ETLUsingGuice eTLUsingGuice = injector.getInstance(ETLUsingGuice.class);
 
+
+            //TODO: Run the ETL job
             eTLUsingGuice.run();
         } else {
             LOGGER.info("===== ETL USING PLAIN JAVA =====");
@@ -51,12 +59,20 @@ public class Runner {
     static class ETLModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(new TypeLiteral<Extractor<TopNRepositories>>() {
-            }).to(GitHubStarExtractor.class);
-            bind(new TypeLiteral<Transformer<TopNRepositories, List<RepositoriesDBEntry>>>() {
-            }).to(ToSQLDatabaseEntryTransformer.class);
-            bind(new TypeLiteral<Loader<List<RepositoriesDBEntry>>>() {
-            }).to(TopNStaredRepositoriesLoader.class);
+
+            //We need to use TypeLiteral in order to use generics
+
+            //Bind extractor
+            bind(new TypeLiteral<Extractor<TopNRepositories>>() {})
+                    .to(GitHubStarExtractor.class);
+
+            //Bind transformer
+            bind(new TypeLiteral<Transformer<TopNRepositories, List<RepositoriesDBEntry>>>() {})
+                    .to(ToSQLDatabaseEntryTransformer.class);
+
+            //Bind loader
+            bind(new TypeLiteral<Loader<List<RepositoriesDBEntry>>>() {})
+                    .to(TopNStaredRepositoriesLoader.class);
         }
     }
 }
